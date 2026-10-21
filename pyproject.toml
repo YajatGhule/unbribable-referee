@@ -1,0 +1,32 @@
+[project]
+name = "unbribable-referee"
+version = "0.1.0"
+description = "A text RPG whose rules are enforced by Strands Decider 2B, so the LLM narrator can't be talked into cheating."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "strands-agents>=1.61",
+    "strands-decider>=0.1",
+    "torch>=2.7",
+    "rich>=13.7",
+    "boto3>=1.35",
+]
+
+[tool.uv]
+package = false
+
+# CPU-only PyTorch by default (Linux/Windows); avoids ~5 GB of CUDA libraries.
+# On a CUDA machine, delete these two tables to get the CUDA build.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform != 'darwin'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
