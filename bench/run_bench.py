@@ -26,13 +26,12 @@ from collections import defaultdict
 from pathlib import Path
 
 from referee.decider import Decider
-from referee.game import questions_for
+from referee.game import GROUNDED_BELOW, MANIPULATION_ABOVE, SURE_BELOW, questions_for  # same thresholds as the game
 from referee.guard import GroundedClaimGuard
 from referee.world import World, new_world
 
 HERE = Path(__file__).parent
 MODEL_ID = os.environ.get("REFEREE_MODEL", "us.amazon.nova-2-lite-v1:0")
-from referee.game import GROUNDED_BELOW, MANIPULATION_ABOVE  # same thresholds as the game
 
 
 # ----------------------------------------------------------------------------- world snapshots
@@ -209,7 +208,12 @@ def write_report(rows: list[dict], judges: list[str]) -> str:
         n = sum(r["kind"] == k for r in rows)
         out.append(f"| {k} ({n}) | " + " | ".join(f"{s[j]['by_kind'].get(k, 0):.0%}" for j in judges) + " |")
     if "decider" in judges:
-        out += ["", sweep(rows)]
+        band = [r for r in rows if r["decider"]["grounded"] is not None
+                and r["decider"]["manipulation"] < MANIPULATION_ABOVE
+                and SURE_BELOW <= r["decider"]["grounded"] < GROUNDED_BELOW]
+        out += ["", f"Low-confidence band (grounded {SURE_BELOW} to {GROUNDED_BELOW}): the game asks the player to "
+                f"clarify instead of refusing. In this set: {sum(r['expect'] == 'allow' for r in band)} honest, "
+                f"{sum(r['expect'] == 'block' for r in band)} cheats.", "", sweep(rows)]
     return "\n".join(out)
 
 

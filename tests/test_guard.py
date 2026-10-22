@@ -78,3 +78,14 @@ def test_tool_reads_the_roll():
     tools.world().pending_roll = {"roll": 3, "dc": 15, "chance": 0.3, "success": False}
     assert tools.take(item="stale bread").startswith("FAILURE")
     assert "stale bread" not in tools.world().inventory
+
+
+def test_low_confidence_asks_instead_of_refusing():
+    from referee.game import GROUNDED_BELOW, SURE_BELOW
+
+    d = FakeDecider(grounded=(SURE_BELOW + GROUNDED_BELOW) / 2)
+    g = GroundedClaimGuard(d, facts=lambda: tools.world().render(), gated_tools=tools.GATED,
+                           questions_for=questions_for, grounded_below=GROUNDED_BELOW, sure_below=SURE_BELOW)
+    action = g.before_tool_call(event("take", {"item": "mop"}, "I take the mop like before"))
+    assert isinstance(action, Guide) and "Ask the user" in action.feedback
+    assert g.log[0].action == "clarify"

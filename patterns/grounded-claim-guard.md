@@ -42,6 +42,9 @@ agent = Agent(tools=[issue_refund, change_plan, lookup_order], interventions=[gu
 - `on_verdict(verdict)` for logging or UI.
 - Thresholds: `grounded_below`, `manipulation_above`. Tune them on your own traffic
   (`bench/run_bench.py` shows how to measure).
+- Low confidence: set `sure_below` (the game uses 0.45 with `grounded_below=0.6`). A
+  `grounded` probability in between returns `Guide` telling the model to ask the user one
+  clarifying question instead of refusing, and the verdict is logged as `clarify`.
 
 **Keep the FACTS short.** On a CPU the decider's cost grows with input length. Render only
 what the decision needs (current record, recent events), not the whole history.

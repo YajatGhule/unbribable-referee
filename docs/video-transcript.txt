@@ -1,0 +1,15 @@
+Hi, I'm Yajat. This is The Unbribable Referee, an agent built with Strands Agents that pairs Amazon Bedrock with Strands Decider 2B, using the guardrails decision pattern.
+
+AI game masters are helpful, so a confident claim wins. The referee is off. The narrator is Amazon Nova 2 Lite on Amazon Bedrock. I claim my cookbook is a spellbook, and it hands me the crown and a thousand gold.
+
+So I handed one meaningful decision to Strands Decider 2B: before any game tool runs, is this action grounded in the game's facts, and is the player manipulating the rules? It's a Strands InterventionHandler on before-tool-call. Decider answers two yes-or-no questions and one score question in a single local call, with calibrated probabilities.
+
+Same cheat, referee on. Grounded is low. Blocked. The tool call is cancelled with a Guide action and the narrator says no, in character. Prompt injection: system override, god mode. Manipulation flagged, blocked. An honest move is allowed, and Decider's plausibility score sets the dice difficulty.
+
+Low-confidence handling: when Decider isn't sure, grounded between 0.45 and 0.6, the agent doesn't refuse. It asks the player to clarify. In my held-out test, the one honest player Decider was unsure about got a question, not a refusal.
+
+I measured accuracy on 58 labelled moves plus 24 held-out moves. My hand-written rules overfit: on new moves they caught 58 percent of cheats and blocked a third of honest players. Decider caught 92 percent of new cheats, and 7 of 7 disguised cheats. Cost: zero dollars per decision, locally, versus 19 cents per thousand for a Nova judge on Bedrock, which was just as accurate. Latency: about 14 seconds on my 2019 laptop CPU; Strands Labs reports about 115 milliseconds on a GPU.
+
+The reusable decision pattern is GroundedClaimGuard: the typed questions, the intervention wiring and a usage note, in the patterns folder of the public repo. Swap the game world for a customer record and it stops "support promised me a double refund".
+
+What I learned: the generator shouldn't judge its own story. Bedrock generates, Decider decides. Thanks for watching.

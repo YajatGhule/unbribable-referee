@@ -38,9 +38,13 @@ with up to three questions:
 
 All three go in one request, so the state is encoded once. Then plain Python decides:
 
-- grounded below 0.6, or manipulation at 0.5 or above → `Guide`: the tool call is
+- grounded below 0.45, or manipulation at 0.5 or above → `Guide`: the tool call is
   cancelled and the narrator gets the referee's feedback, so it narrates the failure
   in-world instead of dead-ending.
+- **low confidence**: grounded between 0.45 and 0.6 means Decider isn't sure. The agent
+  doesn't refuse; the narrator asks the player one clarifying question first. On the held-out
+  set, the one honest move Decider doubted landed in this band, so it got a question, not a
+  refusal.
 - otherwise, the **plausibility distribution becomes the dice**. Decider's calibrated
   probabilities are folded into a success chance, which sets the d20 difficulty. Sneaking
   past a sleeping dragon as a halfling who's good at sneaking gets a low DC. Attacking it

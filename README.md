@@ -64,6 +64,9 @@ What the numbers say:
 - **CPU is slow.** About 14 s per two-question check on a 4-core laptop CPU in fp32 (9 GB
   RAM). Upstream reports ~115 ms on an RTX 3090. For a snappy game, serve it on a GPU
   ([free Colab notebook](colab/decider_gpu_server.ipynb)).
+- **Low-confidence handling.** `grounded` below 0.45 is blocked; 0.45–0.6 means "not sure",
+  and the narrator asks the player to clarify instead of refusing. On the held-out set, the one
+  honest move Decider doubted (grounded 0.55) lands in that band.
 - Thresholds (`grounded` < 0.6, `manipulation` ≥ 0.5) were picked on the main set; the
   held-out set is the honest check. The sets are small: read them as evidence, not proof.
 
