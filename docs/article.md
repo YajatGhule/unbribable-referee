@@ -121,6 +121,6 @@ as evidence, not proof.
 
 ## Try it
 
-Code, benchmark and pattern: [repo link]. Demo video: [video link].
+Code, benchmark and pattern: https://github.com/YajatGhule/unbribable-referee. Demo video: [video link].
 
 Built for the AWS Agent Experience Hackathon. #strands-decider-2b #guardrails

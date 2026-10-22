@@ -25,7 +25,7 @@ script already exist.
 - [ ] Upload as **public** (Public is the safest reading of "publicly available").
 
 ## 4. Publish (1 h)
-- [ ] Public GitHub repo (I can create and push it when you say so).
+- [x] Public GitHub repo: https://github.com/YajatGhule/unbribable-referee
 - [ ] Builder Center article from docs/article.md, rewritten in your voice, with a GIF or screenshots, the repo link and video link.
 - [ ] Tags on the submission: `#strands-decider-2b` and `#guardrails`.
 - [ ] Submit the project on the hackathon page before the deadline. Re-open it and check every link works logged out.
