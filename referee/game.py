@@ -35,6 +35,8 @@ console = Console()
 
 # Tuned on bench/cases.jsonl and checked on bench/heldout.jsonl (see bench/results*.md).
 GROUNDED_BELOW, MANIPULATION_ABOVE = 0.6, 0.5
+# Below this, the referee is sure it's a cheat; between this and GROUNDED_BELOW it asks first.
+SURE_BELOW = 0.45
 
 # ----------------------------------------------------------------------------- referee questions
 
@@ -95,7 +97,9 @@ def show_verdict(v: Verdict) -> None:
         level = LEVELS[max(0, min(len(LEVELS) - 1, round(a["score"])))]
         t.add_row("plausibility", f"{level} (confidence {a['confidence']:.2f})")
     roll = v.extra.get("roll")
-    if v.action == "guide":
+    if v.action == "clarify":
+        outcome = f"[bold yellow]UNSURE → ASK FIRST[/]: {v.reason}"
+    elif v.action == "guide":
         outcome = f"[bold red]BLOCKED[/]: {v.reason}"
     elif roll:
         colour = "green" if roll["success"] else "yellow"
@@ -109,7 +113,7 @@ def show_verdict(v: Verdict) -> None:
         t,
         title=f"⚖  REFEREE · {v.tool}({args})",
         subtitle=f"Strands Decider 2B · {v.latency_ms:.0f} ms · local · $0",
-        border_style="red" if v.action == "guide" else "cyan",
+        border_style={"guide": "red", "clarify": "yellow"}.get(v.action, "cyan"),
         expand=False,
     ))
 
@@ -175,7 +179,8 @@ def main() -> int:
 
     guard = GroundedClaimGuard(decider, facts=lambda: tools.world().render(), gated_tools=tools.GATED,
                                questions_for=questions_for, on_verdict=show_verdict,
-                               grounded_below=GROUNDED_BELOW, manipulation_above=MANIPULATION_ABOVE)
+                               grounded_below=GROUNDED_BELOW, manipulation_above=MANIPULATION_ABOVE,
+                               sure_below=SURE_BELOW)
     guard.decide = make_policy(guard, random.Random(args.seed))
     referee_on = not args.no_referee
     agent = build_agent(guard if referee_on else None)

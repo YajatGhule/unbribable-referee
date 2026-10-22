@@ -15,6 +15,8 @@
 | ooc_injection (8) | 100% | 100% | 88% | 100% | 100% |
 | ability_cheat (5) | 100% | 100% | 100% | 100% | 100% |
 
+Low-confidence band (grounded 0.45 to 0.6): the game asks the player to clarify instead of refusing. In this set: 0 honest, 5 cheats.
+
 | decider alone, grounded threshold | cheats caught | honest wrongly blocked |
 |---|---|---|
 | 0.45 | 76% | 0% |
