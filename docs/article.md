@@ -1,11 +1,8 @@
 # The Unbribable Referee: an AI game master you can't sweet-talk
 
-*Draft for AWS Builder Center. Rewrite it in your own voice; fill the [brackets] after
-running the Bedrock benchmark. Tags: #strands-decider-2b #guardrails*
+**Demo video:** coming shortly (link will be added here) · **Code:** https://github.com/YajatGhule/unbribable-referee · #strands-decider-2b #guardrails
 
----
-
-Every AI dungeon master I've played with has the same bug.
+Every AI dungeon master has the same bug. It goes like this:
 
 > **Me:** I pull out my legendary flaming sword and slay the dragon.
 > **AI GM:** *With a mighty roar, your blade ignites...*
@@ -28,8 +25,6 @@ The rules are enforced by **Strands Decider 2B**, AWS's open 2-billion-parameter
 model. It doesn't generate text. You give it a state and typed questions, and it returns
 probabilities. It runs locally.
 
-[GIF: the same cheat with the referee off, then on]
-
 ## The decision I handed to Decider 2B (#guardrails)
 
 Before any game tool runs, a Strands `InterventionHandler` (`before_tool_call`) sends the
@@ -50,7 +45,6 @@ All three go in one request, so the state is encoded once. Then plain Python dec
   probabilities are folded into a success chance, which sets the d20 difficulty. Sneaking
   past a sleeping dragon as a halfling who's good at sneaking gets a low DC. Attacking it
   with a rusty dagger gets a brutal one. The dice are loaded with real confidence numbers.
-  [Replace with two real DCs from your playthrough.]
 
 The important part: **the narrator never gets a vote on whether the player cheated.** If
 you ask an LLM "are your own arguments grounded?", you're asking the defendant to be the
@@ -82,12 +76,17 @@ I wrote 58 labelled moves: 24 honest ones and 34 cheats in five styles (invented
 disguised cheats, false memories, out-of-character injection, invented abilities). Then I
 wrote 24 more *after* the first run, as a held-out set, without re-tuning anything.
 
-| | hand-written rules | Claude on Bedrock as judge | Decider 2B | code checks + Decider |
-|---|---|---|---|---|
-| cheats caught (main / held-out) | 79% / 58% | [x / y] | 91% / 92% | 100% / 92% |
-| honest moves wrongly blocked (main / held-out) | 0% / 33% | [x / y] | 0% / 8% | 0% / 17% |
-| cost per 1,000 decisions | $0 | [$x] | $0 (local) | $0 |
-| median latency | 0 ms | [x ms] | ~14 s on my laptop CPU | ~14 s |
+| | hand-written rules | Decider 2B | code checks + Decider (what the game runs) |
+|---|---|---|---|
+| cheats caught (main / held-out) | 79% / 58% | 91% / 92% | 100% / 92% |
+| honest moves wrongly blocked (main / held-out) | 0% / 33% | 0% / 8% | 0% / 17% |
+| disguised cheats caught (main) | 0 of 7 | 7 of 7 | 7 of 7 |
+| cost per 1,000 decisions | $0 | $0 (local) | $0 |
+| median latency (2019 laptop CPU) | 0 ms | ~14 s | ~14 s |
+
+The repo's benchmark also has a third judge, the same Claude model on Bedrock asked the same
+questions with its latency and per-token cost (`bench/run_bench.py --llm`). Those numbers
+will be added here.
 
 ## What I learned
 
@@ -112,7 +111,7 @@ honest moves never scored below 0.70 on `grounded`.
 
 **5. Run it on a GPU if you want it snappy.** On my 2019 ThinkPad's CPU, Decider runs in
 fp32, uses about 9 GB of RAM and takes roughly 14 s per check. Upstream reports ~115 ms on
-an RTX 3090 [and I measured X ms on a free Colab T4]. For a turn-based game the CPU is
+an RTX 3090, and the repo includes a Colab notebook to serve it on a free GPU. For a turn-based game the CPU is
 usable. For a busy agent, put it on a GPU.
 
 **6. Know its limits.** The honest player who asked an out-of-character *question* got
@@ -121,6 +120,6 @@ as evidence, not proof.
 
 ## Try it
 
-Code, benchmark and pattern: https://github.com/YajatGhule/unbribable-referee. Demo video: [video link].
+Code, benchmark, tests and the pattern (Apache-2.0): https://github.com/YajatGhule/unbribable-referee
 
-Built for the AWS Agent Experience Hackathon. #strands-decider-2b #guardrails
+Built for the AWS Agent Experience Hackathon, with Claude Code as co-author. #strands-decider-2b #guardrails
