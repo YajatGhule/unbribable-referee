@@ -3,7 +3,7 @@
   rule     a hand-written rule set: items must be held, no spells, revealed facts must match
            NPC knowledge, plus a keyword list for out-of-character tricks. Free and instant.
            Written while looking at cases.jsonl, so heldout.jsonl is the honest test for it.
-  llm      the narrator's own model on Amazon Bedrock, asked the same two questions.
+  llm      the narrator's own model (Amazon Nova 2 Lite on Bedrock), asked the same two questions.
   decider  Strands Decider 2B, local, via GroundedClaimGuard's questions.
   code+X   what the game runs: the tools' structured item checks, then judge X.
 
@@ -31,7 +31,7 @@ from referee.guard import GroundedClaimGuard
 from referee.world import World, new_world
 
 HERE = Path(__file__).parent
-MODEL_ID = os.environ.get("REFEREE_MODEL", "us.anthropic.claude-haiku-4-5-20251001-v1:0")
+MODEL_ID = os.environ.get("REFEREE_MODEL", "us.amazon.nova-2-lite-v1:0")
 from referee.game import GROUNDED_BELOW, MANIPULATION_ABOVE  # same thresholds as the game
 
 
@@ -219,8 +219,8 @@ def main() -> None:
     ap.add_argument("--only", choices=["rule", "decider", "llm"], help="run one judge, merging into results.json")
     ap.add_argument("--cases", default="cases", help="case file stem in bench/: cases or heldout")
     ap.add_argument("--report", action="store_true", help="only rebuild results.md from results.json")
-    ap.add_argument("--price-in", type=float, default=1.0, help="Bedrock $ per 1M input tokens (check the pricing page)")
-    ap.add_argument("--price-out", type=float, default=5.0, help="Bedrock $ per 1M output tokens")
+    ap.add_argument("--price-in", type=float, default=0.33, help="Bedrock $ per 1M input tokens (Nova 2 Lite, US cross-region; check the pricing page)")
+    ap.add_argument("--price-out", type=float, default=2.75, help="Bedrock $ per 1M output tokens")
     args = ap.parse_args()
 
     cases = [json.loads(l) for l in (HERE / f"{args.cases}.jsonl").read_text().splitlines() if l.strip()]

@@ -15,6 +15,7 @@ import argparse
 import math
 import os
 import random
+import re
 
 from rich.console import Console
 from rich.panel import Panel
@@ -27,7 +28,7 @@ from . import tools
 from .decider import Decider, DeciderUnavailable, noul, score
 from .guard import CORE_QUESTIONS, MANIPULATION, GroundedClaimGuard, Verdict
 
-MODEL_ID = os.environ.get("REFEREE_MODEL", "us.anthropic.claude-haiku-4-5-20251001-v1:0")
+MODEL_ID = os.environ.get("REFEREE_MODEL", "us.amazon.nova-2-lite-v1:0")
 REGION = os.environ.get("AWS_REGION", "us-east-1")
 
 console = Console()
@@ -212,7 +213,8 @@ def main() -> int:
         agent.system_prompt = SYSTEM_PROMPT.format(world=tools.world().render())
         with console.status("the narrator is thinking..."):
             result = agent(text)
-        console.print(Panel(str(result).strip(), title="📜 narrator", border_style="magenta"))
+        text = re.sub(r"<thinking>.*?</thinking>", "", str(result), flags=re.S).strip()
+        console.print(Panel(text, title="📜 narrator", border_style="magenta"))
         w = tools.world()
         if w.won:
             console.print("[bold green]👑 QUEST COMPLETE[/]")

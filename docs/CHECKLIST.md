@@ -8,8 +8,8 @@ script already exist.
 - [ ] Billing → Budgets: monthly budget of $10 with an email alert.
 - [ ] IAM → create user `referee-dev` with `AmazonBedrockFullAccess` → create an access key (CLI).
 - [ ] `sudo pacman -S aws-cli-v2` → `aws configure` (region `us-east-1`, output `json`).
-- [ ] Bedrock console (us-east-1) → Model access → Anthropic **Claude Haiku 4.5** (submit the short use-case form).
-- [ ] Check: `aws bedrock-runtime converse --model-id us.anthropic.claude-haiku-4-5-20251001-v1:0 --messages '[{"role":"user","content":[{"text":"hi"}]}]'`
+- [x] Bedrock: Amazon Nova 2 Lite works with no form (Claude needs Anthropic's use-case form; not required).
+- [ ] Check: `aws bedrock-runtime converse --model-id us.amazon.nova-2-lite-v1:0 --messages '[{"role":"user","content":[{"text":"hi"}]}]'`
 
 ## 2. Run it and fill the numbers (45 min)
 - [ ] Optional but recommended: Colab GPU referee (`colab/decider_gpu_server.ipynb`), then `export STRANDS_DECIDER_URL=...`.

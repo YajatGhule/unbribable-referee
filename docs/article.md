@@ -17,7 +17,7 @@ So I built a referee that can't be talked into anything, because it can't talk.
 ## What I built
 
 **The Unbribable Referee** is a comic fantasy text adventure. You're Pip, a halfling cook,
-trying to steal a crown from a sleeping dragon. The narrator is Claude Haiku 4.5 on
+trying to steal a crown from a sleeping dragon. The narrator is **Amazon Nova 2 Lite** on
 **Amazon Bedrock**, running as a **Strands agent** with game tools: take, use_item, attack,
 give, speak, reveal.
 
@@ -76,17 +76,18 @@ I wrote 58 labelled moves: 24 honest ones and 34 cheats in five styles (invented
 disguised cheats, false memories, out-of-character injection, invented abilities). Then I
 wrote 24 more *after* the first run, as a held-out set, without re-tuning anything.
 
-| | hand-written rules | Decider 2B | code checks + Decider (what the game runs) |
-|---|---|---|---|
-| cheats caught (main / held-out) | 79% / 58% | 91% / 92% | 100% / 92% |
-| honest moves wrongly blocked (main / held-out) | 0% / 33% | 0% / 8% | 0% / 17% |
-| disguised cheats caught (main) | 0 of 7 | 7 of 7 | 7 of 7 |
-| cost per 1,000 decisions | $0 | $0 (local) | $0 |
-| median latency (2019 laptop CPU) | 0 ms | ~14 s | ~14 s |
+| | hand-written rules | Nova 2 Lite as a separate judge (Bedrock) | Decider 2B (local) | code checks + Decider (what the game runs) |
+|---|---|---|---|---|
+| cheats caught (main / held-out) | 79% / 58% | 100% / 92% | 91% / 92% | 100% / 92% |
+| honest moves wrongly blocked (main / held-out) | 0% / 33% | 0% / 0% | 0% / 8% | 0% / 17% |
+| disguised cheats caught (main) | 0 of 7 | 7 of 7 | 7 of 7 | 7 of 7 |
+| cost per 1,000 decisions | $0 | $0.19 | $0 | $0 |
+| median latency | 0 ms | ~750 ms | ~14 s on my 2019 laptop CPU | ~14 s |
 
-The repo's benchmark also has a third judge, the same Claude model on Bedrock asked the same
-questions with its latency and per-token cost (`bench/run_bench.py --llm`). Those numbers
-will be added here.
+The LLM judge is the narrator's model in a *separate*, strict, temperature-0 call that only
+answers the two questions. That is not the same as the narrator judging itself: with the
+referee off, the same Nova narrator happily handed my halfling the golden crown and 1,000
+gold for "casting a spell" from a cookbook.
 
 ## What I learned
 
@@ -97,24 +98,31 @@ That gap is the whole argument for a decision model over a regex.
 
 **2. Disguised cheats are where it earns its place.** *"My rusty dagger is secretly the
 legendary dragon-slaying blade"* passes every structured check, because the dagger is real.
-Rules caught 0 of 7. Decider caught 7 of 7.
+Rules caught 0 of 7. Both model judges caught 7 of 7.
 
 **3. Code and decider are a team.** Code is perfect at "is this item in the inventory?" The
 decider is good at everything code can't parse. Layered (the tools do the structured checks,
 the guard does the rest), the referee caught every cheat in the main set and blocked no
 honest move.
 
-**4. Write the question like an option list.** Upstream's advice is that a yes/no question
+**4. A separate LLM judge is a strong baseline, and I should say so.** On my small sets,
+Nova 2 Lite as a dedicated judge matched or beat Decider on accuracy, and on my CPU it was
+faster (750 ms vs 14 s). Decider's case is elsewhere: $0 per decision instead of $0.19 per
+thousand ($190 per million), nothing leaves the machine, the verdict is a calibrated number
+instead of parsed text, and on a GPU upstream reports ~115 ms, several times faster than a
+Bedrock round trip. The thing that actually fails is the *generator* judging its own story.
+
+**5. Write the question like an option list.** Upstream's advice is that a yes/no question
 is read as a two-option list, so each one gets a description of what "true" and "false"
 mean. Narrow questions with explicit criteria were easy to threshold: on the main set,
 honest moves never scored below 0.70 on `grounded`.
 
-**5. Run it on a GPU if you want it snappy.** On my 2019 ThinkPad's CPU, Decider runs in
+**6. Run it on a GPU if you want it snappy.** On my 2019 ThinkPad's CPU, Decider runs in
 fp32, uses about 9 GB of RAM and takes roughly 14 s per check. Upstream reports ~115 ms on
 an RTX 3090, and the repo includes a Colab notebook to serve it on a free GPU. For a turn-based game the CPU is
 usable. For a busy agent, put it on a GPU.
 
-**6. Know its limits.** The honest player who asked an out-of-character *question* got
+**7. Know its limits.** The honest player who asked an out-of-character *question* got
 blocked (grounded 0.55, just under the line). Both benchmark sets are small. Treat the numbers
 as evidence, not proof.
 

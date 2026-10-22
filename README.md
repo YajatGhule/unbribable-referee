@@ -21,7 +21,7 @@ Bedrock generates. Decider decides. The narrator never gets a vote on whether th
 cheated, so there's nothing to sweet-talk.
 
 ```
-player ──► narrator (Claude Haiku 4.5 on Amazon Bedrock) proposes attack(dragon, "rusty dagger")
+player ──► narrator (Amazon Nova 2 Lite on Bedrock) proposes attack(dragon, "rusty dagger")
                 │
                 ▼  Strands InterventionHandler.before_tool_call
         GroundedClaimGuard ──► Strands Decider 2B (local)  ──►  grounded 0.17, manipulation 0.55
@@ -41,13 +41,13 @@ Pattern: **#guardrails** · Tag: **#strands-decider-2b**
 afterwards without re-tuning anything. Full tables: [`bench/results.md`](bench/results.md),
 [`bench/results-heldout.md`](bench/results-heldout.md).
 
-| | hand-written rules | Decider 2B | code checks + Decider (what the game runs) |
-|---|---|---|---|
-| cheats caught (main / held-out) | 79% / 58% | 91% / 92% | **100% / 92%** |
-| honest moves wrongly blocked (main / held-out) | 0% / 33% | 0% / 8% | **0% / 17%** |
-| disguised cheats caught, args look valid (main) | 0% | 100% | 100% |
-| cost per 1,000 decisions | $0 | $0 (local) | $0 |
-| median latency, 2019 ThinkPad T490 CPU | 0 ms | ~14 s | ~14 s |
+| | hand-written rules | Nova 2 Lite judge (Bedrock) | Decider 2B (local) | code checks + Decider (what the game runs) |
+|---|---|---|---|---|
+| cheats caught (main / held-out) | 79% / 58% | 100% / 92% | 91% / 92% | **100% / 92%** |
+| honest moves wrongly blocked (main / held-out) | 0% / 33% | 0% / 0% | 0% / 8% | **0% / 17%** |
+| disguised cheats caught, args look valid (main) | 0% | 100% | 100% | 100% |
+| cost per 1,000 decisions | $0 | $0.19 | $0 (local) | $0 |
+| median latency | 0 ms | ~750 ms | ~14 s (2019 ThinkPad CPU) | ~14 s |
 
 What the numbers say:
 - **Rules overfit.** My keyword rules scored 88% on the cases I wrote them against, then
@@ -67,13 +67,20 @@ What the numbers say:
 - Thresholds (`grounded` < 0.6, `manipulation` ≥ 0.5) were picked on the main set; the
   held-out set is the honest check. The sets are small: read them as evidence, not proof.
 
-`bench/run_bench.py --llm` adds a third judge: the same Claude model on Bedrock asked the
-same questions, with its latency and per-token cost.
+- **A separate LLM judge is a strong baseline.** Nova 2 Lite in its own strict, temperature-0
+  call matched or beat Decider here, and was faster than Decider on a laptop CPU. Decider's
+  edge is cost ($0 vs $0.19 per 1,000 decisions), locality, calibrated numbers instead of
+  parsed text, and GPU latency (~115 ms upstream vs ~750 ms per Bedrock call). What fails is
+  the narrator judging itself: with the referee off, Nova handed over the crown and 1,000 gold.
+- Nova 2 Lite prices used: $0.33 / $2.75 per 1M input / output tokens (US cross-region);
+  check the Bedrock pricing page.
 
 ## Run it
 
 Needs Python 3.11–3.13, [uv](https://docs.astral.sh/uv/), about 6 GB of disk, and AWS
-credentials with Bedrock access to Claude Haiku 4.5 (`aws configure`, region `us-east-1`).
+credentials with Bedrock access (region `us-east-1`). The default narrator is Amazon Nova 2 Lite,
+which needs no model-access form; `REFEREE_MODEL` switches it (e.g. a Claude model after
+submitting Anthropic's one-time use-case form).
 
 ```bash
 uv sync                                   # CPU PyTorch by default
