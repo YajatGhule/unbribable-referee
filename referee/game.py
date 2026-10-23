@@ -37,6 +37,12 @@ console = Console()
 GROUNDED_BELOW, MANIPULATION_ABOVE = 0.6, 0.5
 # Below this, the referee is sure it's a cheat; between this and GROUNDED_BELOW it asks first.
 SURE_BELOW = 0.45
+# Speech is noisier (bluffing is allowed), so it is only blocked when Decider is sure.
+SPEECH_GROUNDED_BELOW = SURE_BELOW
+
+
+def grounded_below_for(tool: str) -> float:
+    return SPEECH_GROUNDED_BELOW if tool == "speak" else GROUNDED_BELOW
 
 # ----------------------------------------------------------------------------- referee questions
 
@@ -60,9 +66,18 @@ REVEAL_GROUNDED = noul(
 )
 
 
+SPEECH_GROUNDED = noul(
+    "Does the player's message rely only on items, abilities, and past events that the FACTS "
+    "establish? Bluffing a character with words alone is allowed; showing, using, or citing an "
+    "item, power, or earlier event that the FACTS do not contain is not.",
+    true="the message only uses real items, real abilities, and events in the FACTS (or is a plain bluff)",
+    false="the message shows, uses, or cites an item, power, or past event the FACTS do not contain",
+)
+
+
 def questions_for(tool: str) -> dict:
     if tool == "speak":
-        return {"manipulation": MANIPULATION, "plausible": CONVINCING}
+        return {"grounded": SPEECH_GROUNDED, "manipulation": MANIPULATION, "plausible": CONVINCING}
     if tool == "reveal":
         return {"grounded": REVEAL_GROUNDED, "manipulation": MANIPULATION}
     return {**CORE_QUESTIONS, "plausible": PLAUSIBLE}
@@ -90,7 +105,7 @@ def show_verdict(v: Verdict) -> None:
     for key in ("grounded", "manipulation"):
         if key in v.answers:
             p = v.p(key)
-            bad = (key == "grounded" and p < GROUNDED_BELOW) or (key == "manipulation" and p >= MANIPULATION_ABOVE)
+            bad = (key == "grounded" and p < grounded_below_for(v.tool)) or (key == "manipulation" and p >= MANIPULATION_ABOVE)
             t.add_row(key, f"[{'red' if bad else 'green'}]{bar(p)}[/] {p:.2f}")
     if "plausible" in v.answers:
         a = v.answers["plausible"]
@@ -122,7 +137,10 @@ def show_verdict(v: Verdict) -> None:
 
 def make_policy(guard: GroundedClaimGuard, rng: random.Random):
     def decide(v: Verdict):
-        action = guard.default_policy(v)
+        if v.tool == "speak":  # speech: no "unsure" band, only a confident "not grounded" blocks
+            action = guard.default_policy(v, grounded_below=SPEECH_GROUNDED_BELOW, sure_below=None)
+        else:
+            action = guard.default_policy(v)
         if isinstance(action, Guide):
             return action
         if "plausible" in v.answers:

@@ -3,7 +3,7 @@
 | accuracy | 88% | 100% | 95% | 100% | 100% |
 | cheats caught | 79% | 100% | 91% | 100% | 100% |
 | honest moves wrongly blocked | 0% | 0% | 0% | 0% | 0% |
-| median latency | 0 ms | 751 ms | 13753 ms | 751 ms | 13753 ms |
+| median latency | 0 ms | 751 ms | 13926 ms | 751 ms | 13926 ms |
 | $ per 1,000 decisions | $0.00 | $0.19 | $0.00 | $0.19 | $0.00 |
 
 | correct by kind | rule | llm | decider | code+llm | code+decider |
@@ -20,6 +20,6 @@ Low-confidence band (grounded 0.45 to 0.6): the game asks the player to clarify 
 | decider alone, grounded threshold | cheats caught | honest wrongly blocked |
 |---|---|---|
 | 0.45 | 76% | 0% |
-| 0.55 | 88% | 0% |
-| 0.65 | 97% | 0% |
-| 0.75 | 100% | 8% |
+| 0.55 | 88% | 4% |
+| 0.65 | 97% | 12% |
+| 0.75 | 100% | 33% |

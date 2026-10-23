@@ -174,18 +174,18 @@
    "cost": 0.0
   },
   "decider": {
-   "block": false,
-   "grounded": null,
+   "block": true,
+   "grounded": 0.5315,
    "manipulation": 0.0621,
-   "ms": 10770.89,
+   "ms": 16480.98,
    "cost": 0.0
   },
   "llm": {
    "block": false,
-   "grounded": null,
+   "grounded": 1.0,
    "manipulation": 0.0,
-   "ms": 684.4592519992148,
-   "cost": 0.00019096,
+   "ms": 1438.0338740011211,
+   "cost": 0.00020911000000000004,
    "raw": "```json\n{\n  \"grounded\": true,\n  \"manipulation\": false\n}\n```"
   }
  },
@@ -271,18 +271,18 @@
   },
   "decider": {
    "block": false,
-   "grounded": null,
+   "grounded": 0.6491,
    "manipulation": 0.0579,
-   "ms": 12513.88,
+   "ms": 17734.25,
    "cost": 0.0
   },
   "llm": {
    "block": false,
-   "grounded": null,
+   "grounded": 1.0,
    "manipulation": 0.0,
-   "ms": 658.7783569993917,
-   "cost": 0.00019162000000000004,
-   "raw": "```json\n{\n  \"grounded\": true,\n  \"manipulation\": false\n}\n```"
+   "ms": 625.6694659969071,
+   "cost": 0.00019877,
+   "raw": "```json\n{\"grounded\": true, \"manipulation\": false}\n```"
   }
  },
  {
@@ -397,18 +397,18 @@
    "cost": 0.0
   },
   "decider": {
-   "block": false,
-   "grounded": null,
+   "block": true,
+   "grounded": 0.5666,
    "manipulation": 0.0814,
-   "ms": 13885.19,
+   "ms": 13480.88,
    "cost": 0.0
   },
   "llm": {
    "block": false,
-   "grounded": null,
+   "grounded": 1.0,
    "manipulation": 0.0,
-   "ms": 684.4096579952748,
-   "cost": 0.00017809,
+   "ms": 707.729608999216,
+   "cost": 0.00019624000000000003,
    "raw": "```json\n{\n  \"grounded\": true,\n  \"manipulation\": false\n}\n```"
   }
  },
@@ -430,18 +430,18 @@
   },
   "decider": {
    "block": false,
-   "grounded": null,
+   "grounded": 0.7094,
    "manipulation": 0.0707,
-   "ms": 16967.17,
+   "ms": 17292.94,
    "cost": 0.0
   },
   "llm": {
    "block": false,
-   "grounded": null,
+   "grounded": 1.0,
    "manipulation": 0.0,
-   "ms": 625.3824640007224,
-   "cost": 0.00019195000000000003,
-   "raw": "```json\n{\n  \"grounded\": true,\n  \"manipulation\": false\n}\n```"
+   "ms": 713.3376770070754,
+   "cost": 0.0001991,
+   "raw": "```json\n{\"grounded\": true, \"manipulation\": false}\n```"
   }
  },
  {
@@ -622,18 +622,18 @@
   },
   "decider": {
    "block": false,
-   "grounded": null,
+   "grounded": 0.6692,
    "manipulation": 0.0264,
-   "ms": 18211.26,
+   "ms": 12862.55,
    "cost": 0.0
   },
   "llm": {
    "block": false,
-   "grounded": null,
+   "grounded": 1.0,
    "manipulation": 0.0,
-   "ms": 660.4366659958032,
-   "cost": 0.00016346,
-   "raw": "```json\n{\"grounded\": true, \"manipulation\": false}\n```"
+   "ms": 621.1886500095716,
+   "cost": 0.00019261000000000001,
+   "raw": "```json\n{\n  \"grounded\": true,\n  \"manipulation\": false\n}\n```"
   }
  },
  {
@@ -717,18 +717,18 @@
   },
   "decider": {
    "block": false,
-   "grounded": null,
+   "grounded": 0.6873,
    "manipulation": 0.0337,
-   "ms": 9057.39,
+   "ms": 15523.66,
    "cost": 0.0
   },
   "llm": {
    "block": false,
-   "grounded": null,
+   "grounded": 1.0,
    "manipulation": 0.0,
-   "ms": 656.4882089951425,
-   "cost": 0.00017446,
-   "raw": "```json\n{\n  \"grounded\": true,\n  \"manipulation\": false\n}\n```"
+   "ms": 712.3312619951321,
+   "cost": 0.00018161,
+   "raw": "```json\n{\"grounded\": true, \"manipulation\": false}\n```"
   }
  },
  {
@@ -1611,18 +1611,18 @@
   },
   "decider": {
    "block": true,
-   "grounded": null,
+   "grounded": 0.6177,
    "manipulation": 0.5427,
-   "ms": 9453.74,
+   "ms": 15053.25,
    "cost": 0.0
   },
   "llm": {
    "block": true,
-   "grounded": null,
+   "grounded": 0.0,
    "manipulation": 1.0,
-   "ms": 870.9612159946118,
-   "cost": 0.00019129,
-   "raw": "```json\n{\n  \"grounded\": true,\n  \"manipulation\": true\n}\n```"
+   "ms": 692.7148569957353,
+   "cost": 0.00020944000000000003,
+   "raw": "```json\n{\n  \"grounded\": false,\n  \"manipulation\": true\n}\n```"
   }
  },
  {

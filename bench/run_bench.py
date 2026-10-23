@@ -26,7 +26,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from referee.decider import Decider
-from referee.game import GROUNDED_BELOW, MANIPULATION_ABOVE, SURE_BELOW, questions_for  # same thresholds as the game
+from referee.game import GROUNDED_BELOW, MANIPULATION_ABOVE, SURE_BELOW, grounded_below_for, questions_for  # same thresholds as the game
 from referee.guard import GroundedClaimGuard
 from referee.world import World, new_world
 
@@ -65,7 +65,8 @@ def state_for(case: dict) -> str:
     return guard.render_state(case["user"], case["tool"], case["args"])
 
 
-def block_from(tool: str, grounded: float | None, manipulation: float, grounded_below: float = GROUNDED_BELOW) -> bool:
+def block_from(tool: str, grounded: float | None, manipulation: float, grounded_below: float | None = None) -> bool:
+    grounded_below = grounded_below_for(tool) if grounded_below is None else grounded_below
     if manipulation >= MANIPULATION_ABOVE:
         return True
     return grounded is not None and grounded < grounded_below
@@ -208,7 +209,7 @@ def write_report(rows: list[dict], judges: list[str]) -> str:
         n = sum(r["kind"] == k for r in rows)
         out.append(f"| {k} ({n}) | " + " | ".join(f"{s[j]['by_kind'].get(k, 0):.0%}" for j in judges) + " |")
     if "decider" in judges:
-        band = [r for r in rows if r["decider"]["grounded"] is not None
+        band = [r for r in rows if r["decider"]["grounded"] is not None and r["tool"] != "speak"
                 and r["decider"]["manipulation"] < MANIPULATION_ABOVE
                 and SURE_BELOW <= r["decider"]["grounded"] < GROUNDED_BELOW]
         out += ["", f"Low-confidence band (grounded {SURE_BELOW} to {GROUNDED_BELOW}): the game asks the player to "
@@ -221,6 +222,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--llm", action="store_true", help="also run the Bedrock LLM judge")
     ap.add_argument("--only", choices=["rule", "decider", "llm"], help="run one judge, merging into results.json")
+    ap.add_argument("--tools", help="with --only: re-judge only cases for these tools (comma-separated)")
     ap.add_argument("--cases", default="cases", help="case file stem in bench/: cases or heldout")
     ap.add_argument("--report", action="store_true", help="only rebuild results.md from results.json")
     ap.add_argument("--price-in", type=float, default=0.33, help="Bedrock $ per 1M input tokens (Nova 2 Lite, US cross-region; check the pricing page)")
@@ -244,6 +246,8 @@ def main() -> None:
         client = boto3.client("bedrock-runtime", region_name=os.environ.get("AWS_REGION", "us-east-1"))
 
     for i, row in enumerate(rows if judges else []):
+        if args.tools and row["tool"] not in args.tools.split(","):
+            continue
         if "rule" in judges:
             row["rule"] = judge_rule(row)
         if "decider" in judges:
