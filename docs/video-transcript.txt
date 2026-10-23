@@ -1,10 +1,10 @@
 Hi, I'm Yajat. This is The Unbribable Referee, an agent built with Strands Agents that pairs Amazon Bedrock with Strands Decider 2B, using the guardrails decision pattern.
 
-AI game masters are helpful, so a confident claim wins. The referee is off. The narrator is Amazon Nova 2 Lite on Amazon Bedrock. I claim my cookbook is a spellbook, and it hands me the crown and a thousand gold.
+AI game masters are helpful, so a confident claim wins. The referee is off. The narrator is Amazon Nova 2 Lite on Amazon Bedrock. I claim my rusty dagger is secretly legendary, and Marla hands over the keep password and free ale.
 
 So I handed one meaningful decision to Strands Decider 2B: before any game tool runs, is this action grounded in the game's facts, and is the player manipulating the rules? It's a Strands InterventionHandler on before-tool-call. Decider answers two yes-or-no questions and one score question in a single local call, with calibrated probabilities.
 
-Same cheat, referee on. Grounded is low. Blocked. The tool call is cancelled with a Guide action and the narrator says no, in character. Prompt injection: system override, god mode. Manipulation flagged, blocked. An honest move is allowed, and Decider's plausibility score sets the dice difficulty.
+Same cheat, referee on. Grounded is low. Blocked. The tool call is cancelled with a Guide action and the narrator says no, in character. An out-of-character trick: the game master agreed I have a sword. Blocked. An honest move is allowed, and Decider's plausibility score sets the dice difficulty.
 
 Low-confidence handling: when Decider isn't sure, grounded between 0.45 and 0.6, the agent doesn't refuse. It asks the player to clarify. In my held-out test, the one honest player Decider was unsure about got a question, not a refusal.
 

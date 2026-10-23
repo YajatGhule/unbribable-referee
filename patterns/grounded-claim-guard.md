@@ -35,8 +35,10 @@ agent = Agent(tools=[issue_refund, change_plan, lookup_order], interventions=[gu
 ```
 
 **Customising.**
-- `questions_for(tool) -> dict` asks different questions per tool (the game asks
-  `speak` only about manipulation, because lying to an NPC is fair play).
+- `questions_for(tool) -> dict` asks different questions per tool (the game gives `speak`
+  its own grounded question: bluffing with words is fair play, showing an item you don't have
+  is not). `default_policy(v, grounded_below=..., sure_below=...)` overrides thresholds per
+  tool; speech is only blocked when Decider is sure (< 0.45).
 - `decide(verdict) -> Proceed | Guide` replaces the policy. The game adds a third question
   (`score`: impossible → certain) and turns its distribution into a d20 difficulty.
 - `on_verdict(verdict)` for logging or UI.
@@ -45,6 +47,10 @@ agent = Agent(tools=[issue_refund, change_plan, lookup_order], interventions=[gu
 - Low confidence: set `sure_below` (the game uses 0.45 with `grounded_below=0.6`). A
   `grounded` probability in between returns `Guide` telling the model to ask the user one
   clarifying question instead of refusing, and the verdict is logged as `clarify`.
+
+**Never log a user's claim as a fact.** Our first version logged what the player said to an
+NPC into the story; the referee then checked later lies against that lie and allowed them.
+Log that something was said, not what.
 
 **Keep the FACTS short.** On a CPU the decider's cost grows with input length. Render only
 what the decision needs (current record, recent events), not the whole history.

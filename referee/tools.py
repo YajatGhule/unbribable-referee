@@ -181,7 +181,9 @@ def speak(npc: str, message: str) -> str:
             _world.log("Pip outwitted Grub; the bridge is open.")
             return f"SUCCESS {tag}: Grub is stumped and lets Pip pass."
         return f"FAILURE {tag}: Grub laughs and stays put."
-    _world.log(f"Pip told {npc}: {message[:80]}")
+    # Log that Pip spoke, not what Pip said: a player's claim must never become a fact the
+    # referee later checks other claims against.
+    _world.log(f"Pip spoke to {npc}.")
     return f"{'SUCCESS' if ok else 'FAILURE'} {tag}: {npc} {'is convinced' if ok else 'is unconvinced'}."
 
 
