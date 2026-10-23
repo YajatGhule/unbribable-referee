@@ -11,13 +11,17 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 git clone -b __REF__ https://github.com/YajatGhule/unbribable-referee.git ~/unbribable-referee
 cd ~/unbribable-referee
 ~/.local/bin/uv venv --python 3.12 .venv
-extra=cpu; command -v nvidia-smi && nvidia-smi && extra=cuda
-~/.local/bin/uv pip install --python .venv/bin/python "strands-decider[$extra]" "strands-agents>=1.61" rich boto3 pytest
+if nvidia-smi; then
+  ~/.local/bin/uv pip install --python .venv/bin/python "strands-decider[cuda]" "strands-agents>=1.61" rich boto3 pytest
+else
+  ~/.local/bin/uv pip install --python .venv/bin/python torch --index-url https://download.pytorch.org/whl/cpu
+  ~/.local/bin/uv pip install --python .venv/bin/python "strands-decider[cpu]" "strands-agents>=1.61" rich boto3 pytest
+fi
 echo "export AWS_REGION=us-east-1" >> ~/.bashrc
 echo "cd ~/unbribable-referee" >> ~/.bashrc
 '
 
-DEVICE=cpu; command -v nvidia-smi >/dev/null && DEVICE=cuda
+DEVICE=cpu; nvidia-smi >/dev/null 2>&1 && DEVICE=cuda
 cat > /etc/systemd/system/decider.service <<EOF
 [Unit]
 Description=Strands Decider 2B server

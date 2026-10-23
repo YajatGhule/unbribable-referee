@@ -31,7 +31,7 @@ if [[ $TYPE == g* ]]; then
   if (( ${quota%.*} < 4 )); then
     echo "Your account can't launch a GPU instance yet. Ask for 4 vCPUs (often approved within hours):"
     echo "  aws service-quotas request-service-quota-increase --service-code ec2 --quota-code L-DB2E81BA --desired-value 4"
-    echo "Or run on CPU instead (slow, like a laptop):  TYPE=m7i.2xlarge bash launch.sh"
+    echo "Or run on a big CPU machine meanwhile:  TYPE=c7i.8xlarge bash launch.sh"
     exit 1
   fi
 fi
@@ -48,10 +48,18 @@ if ! aws iam get-instance-profile --instance-profile-name "$ROLE" >/dev/null 2>&
 fi
 
 AMI=""
-for p in base-oss-nvidia-driver-gpu-ubuntu-24.04 base-oss-nvidia-driver-gpu-ubuntu-22.04; do
-  AMI=$(aws ssm get-parameter --name "/aws/service/deeplearning/ami/x86_64/$p/latest/ami-id" \
-    --query Parameter.Value --output text 2>/dev/null) && break
-done
+if [[ $TYPE == g* ]]; then
+  # Deep Learning AMI: NVIDIA driver preinstalled.
+  for p in base-oss-nvidia-driver-gpu-ubuntu-24.04 base-oss-nvidia-driver-gpu-ubuntu-22.04; do
+    AMI=$(aws ssm get-parameter --name "/aws/service/deeplearning/ami/x86_64/$p/latest/ami-id" \
+      --query Parameter.Value --output text 2>/dev/null) && break
+  done
+  DISK=()
+else
+  AMI=$(aws ssm get-parameter --name /aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id \
+    --query Parameter.Value --output text)
+  DISK=(--block-device-mappings 'DeviceName=/dev/sda1,Ebs={VolumeSize=40,VolumeType=gp3}')
+fi
 [ -n "$AMI" ] || { echo "Couldn't find a Deep Learning AMI"; exit 1; }
 echo "AMI: $AMI"
 
@@ -70,7 +78,7 @@ for SUBNET in $(aws ec2 describe-subnets --filters Name=vpc-id,Values=$VPC Name=
     --query 'Subnets[].SubnetId' --output text); do
   if ID=$(aws ec2 run-instances --image-id "$AMI" --instance-type "$TYPE" --subnet-id "$SUBNET" \
       --iam-instance-profile Name=$ROLE --security-group-ids "$SG" \
-      --metadata-options HttpTokens=required \
+      --metadata-options HttpTokens=required "${DISK[@]}" \
       --user-data file:///tmp/referee-user-data.sh \
       --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$NAME}]" \
       --query 'Instances[0].InstanceId' --output text 2>/tmp/referee-launch.err); then
