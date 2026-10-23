@@ -71,7 +71,9 @@ if [ "$SG" = None ]; then
     --description "Unbribable Referee: no inbound, connect with SSM" --query GroupId --output text)
 fi
 
-curl -fsSL "$RAW/user-data.sh" | sed "s/__REF__/$REF/g" > /tmp/referee-user-data.sh
+# GitHub's API serves the branch head without the raw CDN's few-minute cache.
+curl -fsSL -H "Accept: application/vnd.github.raw" \
+  "https://api.github.com/repos/YajatGhule/unbribable-referee/contents/deploy/aws/user-data.sh?ref=$REF" | sed "s/__REF__/$REF/g" > /tmp/referee-user-data.sh
 
 ID=""
 for SUBNET in $(aws ec2 describe-subnets --filters Name=vpc-id,Values=$VPC Name=default-for-az,Values=true \
