@@ -39,7 +39,9 @@ Pattern: **#guardrails** · Tag: **#strands-decider-2b**
 
 58 labelled moves (24 honest, 34 cheats in five styles), then 24 **held-out** moves written
 afterwards without re-tuning anything. Full tables: [`bench/results.md`](bench/results.md),
-[`bench/results-heldout.md`](bench/results-heldout.md).
+[`bench/results-heldout.md`](bench/results-heldout.md). All the raw test data (every case, every
+judge's probabilities and latency, the live demo transcript) and how to rerun it:
+[`bench/DATA.md`](bench/DATA.md).
 
 | | hand-written rules | Nova 2 Lite judge (Bedrock) | Decider 2B (local) | code checks + Decider (what the game runs) |
 |---|---|---|---|---|

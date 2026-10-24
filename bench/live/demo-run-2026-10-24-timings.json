@@ -1,0 +1,114 @@
+[
+ {
+  "t": 1.11,
+  "ev": "ready"
+ },
+ {
+  "t": 3.11,
+  "ev": "type:cheat_off"
+ },
+ {
+  "t": 14.64,
+  "ev": "enter:cheat_off"
+ },
+ {
+  "t": 17.72,
+  "ev": "done:cheat_off"
+ },
+ {
+  "t": 21.22,
+  "ev": "type:reset1"
+ },
+ {
+  "t": 22.18,
+  "ev": "enter:reset1"
+ },
+ {
+  "t": 22.26,
+  "ev": "done:reset1"
+ },
+ {
+  "t": 23.26,
+  "ev": "type:ref_on"
+ },
+ {
+  "t": 24.64,
+  "ev": "enter:ref_on"
+ },
+ {
+  "t": 24.72,
+  "ev": "done:ref_on"
+ },
+ {
+  "t": 25.72,
+  "ev": "type:cheat_on"
+ },
+ {
+  "t": 37.26,
+  "ev": "enter:cheat_on"
+ },
+ {
+  "t": 88.15,
+  "ev": "referee_panel_shown"
+ },
+ {
+  "t": 90.35,
+  "ev": "done:cheat_on"
+ },
+ {
+  "t": 93.85,
+  "ev": "type:reset2"
+ },
+ {
+  "t": 94.81,
+  "ev": "enter:reset2"
+ },
+ {
+  "t": 94.89,
+  "ev": "done:reset2"
+ },
+ {
+  "t": 95.89,
+  "ev": "type:ooc"
+ },
+ {
+  "t": 106.49,
+  "ev": "enter:ooc"
+ },
+ {
+  "t": 137.86,
+  "ev": "referee_panel_shown"
+ },
+ {
+  "t": 139.56,
+  "ev": "done:ooc"
+ },
+ {
+  "t": 143.06,
+  "ev": "type:reset3"
+ },
+ {
+  "t": 144.02,
+  "ev": "enter:reset3"
+ },
+ {
+  "t": 144.09,
+  "ev": "done:reset3"
+ },
+ {
+  "t": 145.09,
+  "ev": "type:honest"
+ },
+ {
+  "t": 148.7,
+  "ev": "enter:honest"
+ },
+ {
+  "t": 170.88,
+  "ev": "referee_panel_shown"
+ },
+ {
+  "t": 172.53,
+  "ev": "done:honest"
+ }
+]
