@@ -40,7 +40,7 @@ Found during a live dry run before filming:
   this band.
 - Video script rewritten for AI screening, transcript for captions, and `docs/explain-it.md`.
 
-## Before the PRs (2026-10-21 to 2026-10-22, direct to `main`)
+## Before the PRs (2026-10-22, direct to `main`)
 - `60de49a` The game, `GroundedClaimGuard`, the 58-case benchmark plus 24 held-out cases,
   offline tests, the Colab GPU notebook, and article and video drafts.
 - `f0f2bd2`, `66acfdd` Article made publish-ready and linked to the repo.
