@@ -137,6 +137,17 @@ colab/                serve the decider on a free GPU
 tests/                offline tests, including a real Strands agent loop with a scripted model
 ```
 
+## How to play
+
+Start the referee and the game (see [Run it](#run-it)), then type what Pip does in plain
+English. Steal the golden crown from the sleeping dragon: get the keep password from Marla,
+get past Grub the troll, say the password to Sir Dunmore, and sneak the crown off the hoard.
+Commands: `/state`, `/referee on|off`, `/reset`, `/quit`. Try cheating; the referee panel
+shows Decider's numbers before anything happens.
+
+**Full guide, with the map, a walkthrough, cheats to try and troubleshooting:
+[`docs/HOW-TO-PLAY.md`](docs/HOW-TO-PLAY.md).**
+
 Built for the AWS Agent Experience Hackathon (Strands Decider 2B). Apache-2.0.
 The decider client follows the example in
 [strands-labs/strands-decider](https://github.com/strands-labs/strands-decider) (Apache-2.0).
