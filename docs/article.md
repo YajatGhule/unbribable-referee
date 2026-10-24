@@ -1,6 +1,6 @@
 # The Unbribable Referee: an AI game master you can't sweet-talk
 
-**Demo video:** coming shortly (link will be added here) · **Code:** https://github.com/YajatGhule/unbribable-referee · #strands-decider-2b #guardrails
+**Demo video:** https://youtu.be/ufyry4ObnJ8 · **Code:** https://github.com/YajatGhule/unbribable-referee · #strands-decider-2b #guardrails
 
 Every AI dungeon master has the same bug. It goes like this:
 
